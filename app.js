@@ -1,3 +1,15 @@
+import {
+    GraphQLSchema,
+    GraphQLObjectType,
+    GraphQLInt,
+    GraphQLString,
+    GraphQLList,
+    GraphQLNonNull,
+    GraphQLID,
+    GraphQLBoolean,
+    GraphQLFloat
+} from 'graphql';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,11 +19,42 @@ var bodyParser = require('body-parser');
 var graphqlHTTP = require('express-graphql');
 var { buildSchema } = require('graphql');
 
+const query = new GraphQLObjectType({
+    name: "Query",
+    description: "First",
+    fields: () => ({
+        hello: {
+            type: GraphQLString,
+            description: "Accepts a name so you can be nice and say hi",
+            args: {
+                name: {
+                    type: new GraphQLNonNull(GraphQLString),
+                    description: "Name you want to say hi to",
+                }
+            },
+            resolve: (_,args) => {
+                return `Hello, ${args.name}!!!`;
+            }
+        },
+        luckyNumber: {
+            type: GraphQLInt,
+            description: "A lucky number",
+            resolve: () => {
+                return 888;
+            }
+        }
+    })
+});
+/*
 var schema = buildSchema(`
   type Query {
     hello: String
   }
-`);
+`);*/
+
+var schema = buildSchema(
+    query
+);
 
 var root = { hello: () => 'Hello world!' };
 
@@ -36,7 +79,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/graphql', graphqlHTTP({
     schema: schema,
-    rootValue: root,
+    //rootValue: root,
     graphiql: true,
 }));
 
