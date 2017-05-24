@@ -52,9 +52,10 @@ var schema = buildSchema(`
   }
 `);*/
 
-var schema = buildSchema(
+const schema = new GraphQLSchema({
     query
-);
+});
+export default schema;
 
 var root = { hello: () => 'Hello world!' };
 
